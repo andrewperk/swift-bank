@@ -1,4 +1,5 @@
-// The SwiftBank
+// The Swift Bank
+
 struct SwiftBank {
   private let password: String
   private var balance: Double = 0 {
@@ -35,6 +36,11 @@ struct SwiftBank {
 
   // Makes a deposit, updates balance
   mutating func makeDeposit(ofAmount depositAmount: Double) {
+    // If deposit less than 0, display error
+    if depositAmount <= 0 {
+      print("Error: Your deposit must be greater than 0.")
+      return
+    }
     let depositWithBonus = self.finalDepositWithBonus(fromInitialDeposit: depositAmount)
     print("Making a deposit of $\(depositAmount) with a bonus rate. The final amount deposited is \(depositWithBonus)")
     self.balance += depositWithBonus
@@ -53,8 +59,18 @@ struct SwiftBank {
   // Checks password then makes a withdrawal updating the balance
   mutating func makeWithdrawal(ofAmount withdrawalAmount: Double, usingPassword password: String) {
     if isValid(password) {
-      self.balance -= withdrawalAmount
-      print("Making a $\(withdrawalAmount) withdrawal.")
+      // If withdrawal is less than 0, display error
+      if withdrawalAmount <= 0 {
+        print("Error: Your withdrawal must be greater than 0.")
+        return
+      // If withdrawal is greater than available balance
+      } else if withdrawalAmount > self.balance {
+        print("Error: You do not have that much funds available.")
+        return
+      } else {
+        self.balance -= withdrawalAmount
+        print("Making a $\(withdrawalAmount) withdrawal.")
+      }
     } else {
       print("Error: Invalid password. Cannot make withdrawal.")
       return
@@ -73,8 +89,8 @@ var andrew: SwiftBank = SwiftBank(password: "pass123", initialDeposit: 500)
 andrew.makeDeposit(ofAmount: 50)
 // Make withdrawal with incorrect password
 andrew.makeWithdrawal(ofAmount: 100, usingPassword: "pass122")
-// Make withdrawal with correct password
-andrew.makeWithdrawal(ofAmount: 100, usingPassword: "pass123")
+// Make withdrawal with correct password, should display Alert before
+andrew.makeWithdrawal(ofAmount: 555, usingPassword: "pass123")
 // Check balance
 andrew.displayBalance(usingPassword: "pass123")
 
